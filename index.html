@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>30-Day Operations Analyst Sprint</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- SIDEBAR NAV -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">Sprint<span>30</span></div>
+    </div>
+    <ul class="nav-list">
+      <li><a class="nav-item active" data-section="dashboard">
+        <span class="nav-ico"></span><span>Dashboard</span>
+      </a></li>
+      <li><a class="nav-item" data-section="daily-tasks">
+        <span class="nav-ico"></span><span>Daily Tasks</span>
+      </a></li>
+      <li><a class="nav-item" data-section="applications">
+        <span class="nav-ico"></span><span>Applications</span>
+      </a></li>
+      <li><a class="nav-item" data-section="ibm-bi">
+        <span class="nav-ico"></span><span>IBM BI</span>
+      </a></li>
+      <li><a class="nav-item" data-section="linkedin">
+        <span class="nav-ico"></span><span>LinkedIn</span>
+      </a></li>
+      <li><a class="nav-item" data-section="portfolio">
+        <span class="nav-ico"></span><span>Portfolio</span>
+      </a></li>
+      <li><a class="nav-item" data-section="weekly-review">
+        <span class="nav-ico"></span><span>Weekly Review</span>
+      </a></li>
+      <li><a class="nav-item" data-section="networking">
+        <span class="nav-ico"></span><span>Networking</span>
+      </a></li>
+      <li><a class="nav-item" data-section="milestones">
+        <span class="nav-ico"></span><span>Milestones</span>
+      </a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-ghost" onclick="exportJSON()">⬇ Export JSON</button>
+      <label class="btn-ghost" style="cursor:pointer;text-align:center">
+        ⬆ Import JSON
+        <input type="file" accept=".json" style="display:none" onchange="importJSON(event)">
+      </label>
+    </div>
+  </nav>
+
+  <!-- MOBILE HEADER -->
+  <header class="mobile-header">
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()">☰</button>
+    <span class="mobile-brand">⚡ Sprint30</span>
+    <div></div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="main" id="mainContent">
+
+    <!-- ===== SECTION: DASHBOARD ===== -->
+    <section class="section active" id="section-dashboard">
+      <div class="dash-header">
+        <div class="dash-title-wrap">
+          <h1 class="dash-title">30-Day Operations Analyst Sprint</h1>
+          <p class="dash-subtitle">Systematic · Strategic · Relentless</p>
+        </div>
+        <div class="dash-settings">
+          <div class="setting-group">
+            <label class="setting-label">Sprint Start</label>
+            <input type="date" class="setting-input" id="startDate" onchange="updateSettings()">
+          </div>
+          <div class="setting-group">
+            <label class="setting-label">Visa Expiry</label>
+            <input type="date" class="setting-input" id="visaExpiry" onchange="updateSettings()">
+          </div>
+        </div>
+      </div>
+
+      <div class="counter-row">
+        <div class="counter-card">
+          <div class="counter-num" id="dayCounter">—</div>
+          <div class="counter-label">Day of 30</div>
+        </div>
+        <div class="counter-card">
+          <div class="counter-num accent" id="sprintLeft">—</div>
+          <div class="counter-label">Sprint Days Left</div>
+        </div>
+        <!-- <div class="counter-card">
+          <div class="counter-num warning" id="visaLeft">—</div>
+          <div class="counter-label">Visa Days Left</div>
+        </div> -->
+        <div class="counter-card">
+          <div class="counter-num success" id="completedDays">0</div>
+          <div class="counter-label">Days Completed</div>
+        </div>
+      </div>
+
+      <div class="overall-progress-wrap">
+        <div class="progress-header">
+          <span>Overall Sprint Progress</span>
+          <span id="overallPct" class="accent-text">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="overallBar" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Metrics Grid -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-top">
+            <span class="metric-title">Applications Sent</span>
+            <span class="status-pill" id="appStatusPill">ON TRACK</span>
+          </div>
+          <div class="ring-wrap">
+            <svg class="ring-svg" viewBox="0 0 80 80">
+              <circle class="ring-bg" cx="40" cy="40" r="34"/>
+              <circle class="ring-fg" id="appRing" cx="40" cy="40" r="34"/>
+            </svg>
+            <div class="ring-center">
+              <div class="ring-val" id="appCount">0</div>
+              <div class="ring-sub">/ 150</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-top">
+            <span class="metric-title">IBM BI Progress</span>
+            <span class="status-pill" id="ibmStatusPill">ON TRACK</span>
+          </div>
+          <div class="ring-wrap">
+            <svg class="ring-svg" viewBox="0 0 80 80">
+              <circle class="ring-bg" cx="40" cy="40" r="34"/>
+              <circle class="ring-fg" id="ibmRing" cx="40" cy="40" r="34"/>
+            </svg>
+            <div class="ring-center">
+              <div class="ring-val" id="ibmPct">0%</div>
+              <div class="ring-sub">done</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-top">
+            <span class="metric-title">LinkedIn Posts</span>
+            <span class="status-pill" id="liStatusPill">ON TRACK</span>
+          </div>
+          <div class="ring-wrap">
+            <svg class="ring-svg" viewBox="0 0 80 80">
+              <circle class="ring-bg" cx="40" cy="40" r="34"/>
+              <circle class="ring-fg" id="liRing" cx="40" cy="40" r="34"/>
+            </svg>
+            <div class="ring-center">
+              <div class="ring-val" id="liCount">0</div>
+              <div class="ring-sub">/ 8</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-top">
+            <span class="metric-title">Portfolio Projects</span>
+            <span class="status-pill" id="portStatusPill">ON TRACK</span>
+          </div>
+          <div class="ring-wrap">
+            <svg class="ring-svg" viewBox="0 0 80 80">
+              <circle class="ring-bg" cx="40" cy="40" r="34"/>
+              <circle class="ring-fg" id="portRing" cx="40" cy="40" r="34"/>
+            </svg>
+            <div class="ring-center">
+              <div class="ring-val" id="portCount">0</div>
+              <div class="ring-sub">/ 3</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-top">
+            <span class="metric-title">Interviews</span>
+            <span class="status-pill" id="intStatusPill">ON TRACK</span>
+          </div>
+          <div class="ring-wrap">
+            <svg class="ring-svg" viewBox="0 0 80 80">
+              <circle class="ring-bg" cx="40" cy="40" r="34"/>
+              <circle class="ring-fg" id="intRing" cx="40" cy="40" r="34"/>
+            </svg>
+            <div class="ring-center">
+              <div class="ring-val" id="intCount">0</div>
+              <div class="ring-sub">/ 5-10</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="metric-card streak-card">
+          <div class="streak-lightning">⚡</div>
+          <div class="streak-num" id="streakNum">0</div>
+          <div class="streak-label">day streak</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION: DAILY TASKS ===== -->
+    <section class="section" id="section-daily-tasks">
+      <div class="sec-header">
+        <h2>Daily Task Checklist</h2>
+        <div class="day-selector-wrap">
+          <label>Select Day:</label>
+          <select class="day-select" id="taskDaySelect" onchange="renderDayTasks()"></select>
+        </div>
+      </div>
+      <div id="dayTasksContainer"></div>
+    </section>
+
+    <!-- ===== SECTION: APPLICATIONS ===== -->
+    <section class="section" id="section-applications">
+      <div class="sec-header">
+        <h2>Job Application Log</h2>
+        <div class="sec-actions">
+          <button class="btn-primary" onclick="openAppModal()">+ Add Application</button>
+          <button class="btn-secondary" onclick="exportAppsCSV()">⬇ CSV</button>
+        </div>
+      </div>
+      <div class="stats-bar">
+        <div class="stat-item"><span class="stat-num" id="totalApps">0</span><span class="stat-lbl">Applied</span></div>
+        <div class="stat-item"><span class="stat-num success-text" id="totalResponses">0</span><span class="stat-lbl">Responses</span></div>
+        <div class="stat-item"><span class="stat-num accent-text" id="totalInterviews">0</span><span class="stat-lbl">Interviews</span></div>
+        <div class="stat-item"><span class="stat-num warning-text" id="totalOffers">0</span><span class="stat-lbl">Offers</span></div>
+        <div class="stat-item"><span class="stat-num danger-text" id="totalRejected">0</span><span class="stat-lbl">Rejected</span></div>
+      </div>
+      <div class="filter-bar">
+        <select class="filter-select" id="filterStatus" onchange="renderAppsTable()">
+          <option value="">All Statuses</option>
+          <option>Applied</option><option>Viewed</option><option>Response</option>
+          <option>Interview Scheduled</option><option>Interview Done</option>
+          <option>Rejected</option><option>Offer</option><option>Withdrawn</option>
+        </select>
+        <select class="filter-select" id="filterIndustry" onchange="renderAppsTable()">
+          <option value="">All Industries</option>
+          <option>Logistics</option><option>Banking</option><option>Consulting</option>
+          <option>Tech</option><option>Retail</option><option>Manufacturing</option>
+          <option>Construction</option><option>Healthcare</option><option>Other</option>
+        </select>
+        <select class="filter-select" id="filterPlatform" onchange="renderAppsTable()">
+          <option value="">All Platforms</option>
+          <option>LinkedIn</option><option>Indeed</option><option>Tier2Jobs</option>
+          <option>CoSponsor</option><option>Otta</option><option>Company Direct</option>
+          <option>Reed</option><option>Totaljobs</option><option>Other</option>
+        </select>
+        <select class="filter-select" id="sortBy" onchange="renderAppsTable()">
+          <option value="date">Sort: Date</option>
+          <option value="status">Sort: Status</option>
+          <option value="company">Sort: Company</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table" id="appsTable">
+          <thead>
+            <tr>
+              <th>#</th><th>Date</th><th>Company</th><th>Role</th><th>Salary</th>
+              <th>Visa</th><th>Industry</th><th>Platform</th><th>CL</th>
+              <th>Status</th><th>Follow-up</th><th>Notes</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="appsTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== SECTION: IBM BI ===== -->
+    <section class="section" id="section-ibm-bi">
+      <div class="sec-header">
+        <h2>IBM BI Progress Tracker</h2>
+      </div>
+      <div class="ibm-overall-wrap">
+        <div class="progress-header">
+          <span>Certification Progress</span>
+          <span class="accent-text" id="ibmOverallPct">0%</span>
+        </div>
+        <div class="progress-track big-track">
+          <div class="progress-fill" id="ibmOverallBar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="course-grid" id="courseGrid"></div>
+    </section>
+
+    <!-- ===== SECTION: LINKEDIN ===== -->
+    <section class="section" id="section-linkedin">
+      <div class="sec-header">
+        <h2>LinkedIn Content Tracker</h2>
+      </div>
+      <div class="post-grid" id="postGrid"></div>
+    </section>
+
+    <!-- ===== SECTION: PORTFOLIO ===== -->
+    <section class="section" id="section-portfolio">
+      <div class="sec-header">
+        <h2>Portfolio Projects</h2>
+      </div>
+      <div class="portfolio-grid" id="portfolioGrid"></div>
+    </section>
+
+    <!-- ===== SECTION: WEEKLY REVIEW ===== -->
+    <section class="section" id="section-weekly-review">
+      <div class="sec-header">
+        <h2>Weekly Review</h2>
+      </div>
+      <div class="week-tabs">
+        <button class="week-tab active" onclick="selectWeek(1,this)">Week 1</button>
+        <button class="week-tab" onclick="selectWeek(2,this)">Week 2</button>
+        <button class="week-tab" onclick="selectWeek(3,this)">Week 3</button>
+        <button class="week-tab" onclick="selectWeek(4,this)">Week 4</button>
+      </div>
+      <div id="weeklyContainer"></div>
+    </section>
+
+    <!-- ===== SECTION: NETWORKING ===== -->
+    <section class="section" id="section-networking">
+      <div class="sec-header">
+        <h2>Networking Log</h2>
+        <button class="btn-primary" onclick="openNetworkModal()">+ Add Contact</button>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Name</th><th>Company</th><th>Role</th><th>Platform</th>
+              <th>Date</th><th>Msg</th><th>Reply</th><th>F/U</th><th>Notes</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="networkTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== SECTION: MILESTONES ===== -->
+    <section class="section" id="section-milestones">
+      <div class="sec-header">
+        <h2>Milestones & Achievements</h2>
+      </div>
+      <div class="streak-banner">
+        <div class="streak-banner-ico">⚡</div>
+        <div>
+          <div class="streak-banner-num" id="bigStreak">0</div>
+          <div class="streak-banner-label">consecutive days completed</div>
+        </div>
+      </div>
+      <div class="milestones-grid" id="milestonesGrid"></div>
+    </section>
+
+  </main>
+
+  <!-- ======= MODALS ======= -->
+
+  <!-- Application Modal -->
+  <div class="modal-overlay" id="appModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="appModalTitle">Add Application</h3>
+        <button class="modal-close" onclick="closeModal('appModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="appEditIndex">
+        <div class="form-grid">
+          <div class="form-field"><label>Date</label>
+            <input type="date" id="appDate"></div>
+          <div class="form-field"><label>Company</label>
+            <input type="text" id="appCompany" placeholder="Company name"></div>
+          <div class="form-field"><label>Role</label>
+            <input type="text" id="appRole" placeholder="Job title"></div>
+          <div class="form-field"><label>Salary Range</label>
+            <input type="text" id="appSalary" placeholder="e.g. £35k–£45k"></div>
+          <div class="form-field"><label>Visa Sponsorship</label>
+            <select id="appVisa"><option>Y</option><option>N</option><option>Unknown</option></select></div>
+          <div class="form-field"><label>Industry</label>
+            <select id="appIndustry">
+              <option>Logistics</option><option>Banking</option><option>Consulting</option>
+              <option>Tech</option><option>Retail</option><option>Manufacturing</option>
+              <option>Construction</option><option>Healthcare</option><option>Other</option>
+            </select></div>
+          <div class="form-field"><label>Platform</label>
+            <select id="appPlatform">
+              <option>LinkedIn</option><option>Indeed</option><option>Tier2Jobs</option>
+              <option>CoSponsor</option><option>Otta</option><option>Company Direct</option>
+              <option>Reed</option><option>Totaljobs</option><option>Other</option>
+            </select></div>
+          <div class="form-field"><label>Cover Letter</label>
+            <select id="appCL"><option>Y</option><option>N</option></select></div>
+          <div class="form-field"><label>Status</label>
+            <select id="appStatus">
+              <option>Applied</option><option>Viewed</option><option>Response</option>
+              <option>Interview Scheduled</option><option>Interview Done</option>
+              <option>Rejected</option><option>Offer</option><option>Withdrawn</option>
+            </select></div>
+          <div class="form-field"><label>Follow-up Date</label>
+            <input type="date" id="appFollowup"></div>
+          <div class="form-field full"><label>Notes</label>
+            <textarea id="appNotes" rows="2" placeholder="Notes..."></textarea></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('appModal')">Cancel</button>
+        <button class="btn-primary" onclick="saveApplication()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Network Modal -->
+  <div class="modal-overlay" id="networkModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Contact</h3>
+        <button class="modal-close" onclick="closeModal('networkModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="netEditIndex">
+        <div class="form-grid">
+          <div class="form-field"><label>Name</label>
+            <input type="text" id="netName" placeholder="Full name"></div>
+          <div class="form-field"><label>Company</label>
+            <input type="text" id="netCompany" placeholder="Company"></div>
+          <div class="form-field"><label>Role</label>
+            <input type="text" id="netRole" placeholder="Their role"></div>
+          <div class="form-field"><label>Platform</label>
+            <select id="netPlatform">
+              <option>LinkedIn</option><option>Email</option><option>Event</option>
+            </select></div>
+          <div class="form-field"><label>Date Connected</label>
+            <input type="date" id="netDate"></div>
+          <div class="form-field"><label>Message Sent</label>
+            <select id="netMsg"><option>Y</option><option>N</option></select></div>
+          <div class="form-field"><label>Response</label>
+            <select id="netReply"><option>N</option><option>Y</option></select></div>
+          <div class="form-field"><label>Follow-up Needed</label>
+            <select id="netFollowup"><option>Y</option><option>N</option></select></div>
+          <div class="form-field full"><label>Notes</label>
+            <textarea id="netNotes" rows="2" placeholder="Notes..."></textarea></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('networkModal')">Cancel</button>
+        <button class="btn-primary" onclick="saveContact()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
